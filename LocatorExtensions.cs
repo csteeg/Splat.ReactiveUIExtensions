@@ -23,27 +23,74 @@ namespace Splat.ReactiveUIExtensions
             RegisterType(resolver, typeof(TImpl).GetTypeInfo(), typeof(TAs).GetTypeInfo());
         }
 
-        public static void RegisterViewsAndViewModels(this IMutableDependencyResolver resolver, Assembly assembly, Type baseViewModelType)
+        /// <summary>
+        /// Registers the views and view models.
+        /// </summary>
+        /// <param name="resolver">Resolver.</param>
+        /// <param name="assembly">The assembly to scan for views and viewmodels.</param>
+        /// <typeparam name="TBaseViewModelType">The base viewmodel type</typeparam>
+        public static void RegisterViewsAndViewModels<TBaseViewModel>(this IMutableDependencyResolver resolver, Assembly assembly)
         {
-            RegisterViewsAndViewModels<IViewFor>(resolver, assembly, baseViewModelType);
+            RegisterViewsAndViewModels<TBaseViewModel, IViewFor>(resolver, assembly);
         }
 
-        public static void RegisterViewsAndViewModels<TIViewFor>(this IMutableDependencyResolver resolver, Assembly assembly, Type baseViewModelType)
+        /// <summary>
+        /// Registers the views and view models.
+        /// </summary>
+        /// <param name="resolver">Resolver.</param>
+        /// <param name="assembly">The assembly to scan for views and viewmodels.</param>
+        /// <typeparam name="TBaseViewModelType">The base viewmodel type</typeparam>
+        /// <typeparam name="TIViewFor">The basetype for views.</typeparam>
+        public static void RegisterViewsAndViewModels<TBaseViewModel, TIViewFor>(this IMutableDependencyResolver resolver, Assembly assembly)
         {
-            // for each type that implements IViewFor
-            foreach (TypeInfo ti in assembly.DefinedTypes
-                .Where(ti => !ti.IsAbstract && !ti.IsGenericTypeDefinition))
+            foreach (TypeInfo ti in assembly.DefinedTypes.Where(ti => !ti.IsAbstract && !ti.IsGenericTypeDefinition))
             {
-                RegisterViewsAndViewModels<TIViewFor>(resolver, ti, baseViewModelType);
+                RegisterView<TIViewFor>(resolver, ti);
+                RegisterViewModel<TBaseViewModel>(resolver, ti);
             }
         }
 
-        public static void RegisterViewsAndViewModels(this IMutableDependencyResolver resolver, TypeInfo ti, Type baseViewModelType)
+        /// <summary>
+        /// Registers the views.
+        /// </summary>
+        /// <param name="resolver">Resolver.</param>
+        /// <param name="assembly">The assembly to scan for views.</param>
+        /// <param name="registerDirectAlso">If set to <c>true</c>, this will register the view on the container as an implementation of TIViewFor.
+        /// Otherwise, only second level implementations are registered. Eg, if TIViewFor is <c>IViewFor</c>, only <c>IViewFor&lt;object&gt;</c> is registered, not IViewFor self.
+        /// Default is <c>false</c>.</param>
+        /// <typeparam name="TIViewFor">The basetype for views.</typeparam>
+        public static void RegisterViews<TIViewFor>(this IMutableDependencyResolver resolver, Assembly assembly, bool registerDirectAlso = false)
         {
-            RegisterViewsAndViewModels<IViewFor>(resolver, ti, baseViewModelType);
+            foreach (TypeInfo ti in assembly.DefinedTypes.Where(ti => !ti.IsAbstract && !ti.IsGenericTypeDefinition))
+            {
+                RegisterView<TIViewFor>(resolver, ti, registerDirectAlso);
+            }
         }
 
-        public static void RegisterViewsAndViewModels<TIViewFor>(this IMutableDependencyResolver resolver, TypeInfo ti, Type baseViewModelType)
+        /// <summary>
+        /// Registers the view models.
+        /// </summary>
+        /// <param name="resolver">Resolver.</param>
+        /// <param name="assembly">The assembly to scan for viewmodels.</param>
+        /// <typeparam name="TBaseViewModelType">The base viewmodel type</typeparam>
+        public static void RegisterViewModels<TBaseViewModelType>(this IMutableDependencyResolver resolver, Assembly assembly)
+        {
+            foreach (TypeInfo ti in assembly.DefinedTypes.Where(ti => !ti.IsAbstract && !ti.IsGenericTypeDefinition))
+            {
+                RegisterViewModel<TBaseViewModelType>(resolver, ti);
+            }
+        }
+
+        /// <summary>
+        /// Registers a view, if the criteria are met
+        /// </summary>
+        /// <param name="resolver">Resolver.</param>
+        /// <param name="ti">Typeinfo for this view</param>
+        /// <param name="registerDirectAlso">If set to <c>true</c>, this will register the view on the container as an implementation of TIViewFor.
+        /// Otherwise, only second level implementations are registered. Eg, if TIViewFor is <c>IViewFor</c>, only <c>IViewFor&lt;object&gt;</c> is registered, not IViewFor self.
+        /// Default is <c>false</c>.</param>
+        /// <typeparam name="TIViewFor">The basetype for views.</typeparam>
+        public static void RegisterView<TIViewFor>(this IMutableDependencyResolver resolver, TypeInfo ti, bool registerDirectAlso = false)
         {
             if (ti.ImplementedInterfaces.Contains(typeof(TIViewFor)))
             {
@@ -51,22 +98,21 @@ namespace Splat.ReactiveUIExtensions
                 foreach (Type ivf in ti.ImplementedInterfaces.Where(t =>
                     t.GetTypeInfo().ImplementedInterfaces.Contains(typeof(TIViewFor))))
                 {
-                    // need to check for null because some classes may implement IViewFor but not IViewFor<T> - we don't care about those
-                    if (ivf != null)
-                    {
-                        // my kingdom for c# 6!
-                        RegisterType(resolver, ti, ivf);
-                    }
+                    RegisterType(resolver, ti, ivf);
                 }
             }
-            else if (baseViewModelType.IsAssignableFrom(ti))
+        }
+
+        public static void RegisterViewModel<TBaseViewModelType>(this IMutableDependencyResolver resolver, TypeInfo ti)
+        {
+            if (typeof(TBaseViewModelType).IsAssignableFrom(ti))
             {
                 RegisterType(resolver, ti, ti);
-                RegisterType(resolver, ti, baseViewModelType, ti.FullName);
-                if (baseViewModelType.IsInterface)
+                RegisterType(resolver, ti, typeof(TBaseViewModelType), ti.FullName);
+                if (typeof(TBaseViewModelType).IsInterface)
                 {
                     foreach (Type vmt in ti.ImplementedInterfaces.Where(t =>
-                        t.GetTypeInfo().ImplementedInterfaces.Contains(baseViewModelType)))
+                        t.GetTypeInfo().ImplementedInterfaces.Contains(typeof(TBaseViewModelType))))
                     {
                         RegisterType(resolver, ti, vmt);
                     }

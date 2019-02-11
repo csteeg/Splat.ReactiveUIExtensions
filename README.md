@@ -8,12 +8,14 @@ Instead of
             Locator.CurrentMutable.Register(() => new MovieDetailView(), typeof(IViewFor<MovieDetailViewModel>));
             
 You can now do
-Locator.CurrentMutable.RegisterViewsAndViewModels(typeof(AppBootstrapper).Assembly, typeof(ViewModelBase));
+Locator.CurrentMutable.RegisterViewsAndViewModels<ViewModelBase>(typeof(AppBootstrapper).Assembly);
 
-The first parameter is the assembly where your views and viewmodels reside, the second one is the base class for your viewmodels.
-The viewmodels are detected by looking if types are derived from the second parameter. The views are detected by 
-checking if they implement IViewFor by default. There is also a generic version of RegisterViewsAndViewModels where you can pass in the 
+The first parameter is the assembly where your views and viewmodels reside, the generic parameter is the base class for your viewmodels.
+The given assembly will be scanned for viewmodels by looking if there are types defined that are are derived from the generic parameter TBaseViewModelType. 
+The views are registered by checking if there are types implementing IViewFor by default. There is also an overload for RegisterViewsAndViewModels where you can pass in the 
 base class for views.
+
+There are also methods to register views (RegisterViews, duh) and register viewmodels (hmm, RegisterViewModels) if you wish to have some more control from your code in how things are scanned and registered.
 
 ##Constructor injection
 If you use the extension methods in this library to register your classes in splat, it will use dependency injection by default for
