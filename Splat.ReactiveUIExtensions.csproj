@@ -11,6 +11,10 @@
     <Title>Splat reactiveUI Extensions</Title>
     <ReleaseVersion>1.0</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
+    <PackageId>Splat.ReactiveUIExtensions</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageTags>splat, ioc, xamarin, reactiveui, xamarinforms</PackageTags>
+    <Description>Add all views and viewmodels with one call and enable constructor injection</Description>
   </PropertyGroup>
 
   <ItemGroup>
