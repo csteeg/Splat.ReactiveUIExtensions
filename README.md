@@ -1,5 +1,7 @@
 # Splat.ReactiveUIExtensions
 Add constructor injection to splat and add methods to register all views and viewmodels in an assembly
+You can install the [nuget package "Splat.ReactiveUIExtensions"](https://www.nuget.org/packages/Splat.ReactiveUIExtensions/) to get started
+
 
 ## Register all your views and viewmodels on startup:
 Instead of 
