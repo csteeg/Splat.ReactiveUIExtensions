@@ -1,7 +1,7 @@
 # Splat.ReactiveUIExtensions
 Add constructor injection to splat and add methods to register all views and viewmodels in an assembly
 
-##Register all your views and viewmodels on startup:
+## Register all your views and viewmodels on startup:
 Instead of 
             Locator.CurrentMutable.Register(() => new UpcomingMoviesListView(), typeof(IViewFor<UpcomingMoviesListViewModel>));
             Locator.CurrentMutable.Register(() => new UpcomingMoviesCellView(), typeof(IViewFor<UpcomingMoviesCellViewModel>));
@@ -17,7 +17,7 @@ base class for views.
 
 There are also methods to register views (RegisterViews, duh) and register viewmodels (hmm, RegisterViewModels) if you wish to have some more control from your code in how things are scanned and registered.
 
-##Constructor injection
+## Constructor injection
 If you use the extension methods in this library to register your classes in splat, it will use dependency injection by default for
 the class constructors. 
 These methods are:
