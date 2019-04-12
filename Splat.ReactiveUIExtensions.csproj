@@ -9,10 +9,10 @@
     <PackageProjectUrl>https://github.com/csteeg/Splat.ReactiveUIExtensions</PackageProjectUrl>
     <Summary>Add all views and viewmodels with one call and enable constructor injection</Summary>
     <Title>Splat reactiveUI Extensions</Title>
-    <ReleaseVersion>1.0.1</ReleaseVersion>
+    <ReleaseVersion>1.0.2</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <PackageId>Splat.ReactiveUIExtensions</PackageId>
-    <PackageVersion>1.0.1</PackageVersion>
+    <PackageVersion>1.0.2</PackageVersion>
     <PackageTags>splat, ioc, xamarin, reactiveui, xamarinforms</PackageTags>
     <Description>Add all views and viewmodels with one call and enable constructor injection</Description>
   </PropertyGroup>

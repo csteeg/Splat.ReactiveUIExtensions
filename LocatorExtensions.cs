@@ -128,7 +128,7 @@ namespace Splat.ReactiveUIExtensions
                 contract = contractSource != null ? contractSource.Contract : string.Empty;
             }
 
-            Func<object> factory = TypeFactoryCreator(ti, resolver);
+            Func<object> factory = TypeFactoryCreator(ti);
             if (singleInstance
                 || ti.GetCustomAttribute<SingleInstanceViewAttribute>() != null
                 || ti.GetCustomAttribute<SingleInstanceAttribute>() != null)
@@ -141,8 +141,8 @@ namespace Splat.ReactiveUIExtensions
             }
         }
 
-        public static Func<TypeInfo, IMutableDependencyResolver, Func<object>> TypeFactoryCreator { get; set; } =
-            (TypeInfo typeInfo, IMutableDependencyResolver resolver) =>
+        public static Func<TypeInfo, Func<object>> TypeFactoryCreator { get; set; } =
+            (TypeInfo typeInfo) =>
             {
                 ConstructorInfo constructorInfo = typeInfo.DeclaredConstructors.Where(ci => ci.IsPublic)
                     .OrderByDescending(ci => ci.GetParameters().Count())
