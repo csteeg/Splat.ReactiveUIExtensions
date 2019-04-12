@@ -165,10 +165,10 @@ namespace Splat.ReactiveUIExtensions
                                if (typeof(IEnumerable).IsAssignableFrom(p.ParameterType))
                                {
                                    Type elementType = ReflectionHelpers.GetElementType(p.ParameterType);
-                                   return resolver.GetServices(elementType).ToArrayOfType(elementType);
+                                   return Locator.Current.GetServices(elementType).ToArrayOfType(elementType);
                                }
 
-                               return resolver.GetService(p.ParameterType);
+                               return Locator.Current.GetService(p.ParameterType);
                            })
                            .ToArray());
                    };
